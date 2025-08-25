@@ -1,0 +1,117 @@
+import numpy as np
+import scipy.signal as signal
+import scipy.interpolate as interp
+from concurrent.futures import ThreadPoolExecutor
+
+def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    {Optimized gravitational wave detection pipeline integrating hybrid PSD whitening with Hermite smoothing, Tukey-based spectral shaping, multi-band SNR normalization, and adaptive threshold scaling for improved event detection and timing accuracy.}
+    """
+
+    def hybrid_psd_whitening(strain: np.ndarray, dt: float, window_length: int = 4096) -> np.ndarray:
+        """
+        Performs adaptive PSD whitening with Hermite smoothing and Tukey-based guard band scaling to ensure spectral fidelity.
+        """
+        strain_zeromean = strain - np.mean(strain)
+        fs = 1.0 / dt
+
+        # Compute PSD with Welch's method
+        freqs, psd = signal.welch(
+            strain_zeromean, fs=fs, nperseg=window_length, window="hann", noverlap=window_length // 2
+        )
+
+        # Hermite smoothing for monotonic PSD modeling
+        smoothing_kernel = signal.windows.hann(32)
+        smoothed_psd = np.convolve(psd, smoothing_kernel / smoothing_kernel.sum(), mode="same")
+        clipped_psd = np.clip(smoothed_psd, np.percentile(smoothed_psd, 1), np.percentile(smoothed_psd, 99))
+
+        # Frequency interpolation with monotonic Hermite smoothing
+        fft_freqs = np.fft.rfftfreq(len(strain_zeromean), d=dt)
+        psd_interpolator = interp.PchipInterpolator(freqs, clipped_psd)
+        interpolated_psd = psd_interpolator(fft_freqs)
+
+        # Add Tukey-based guard band scaling
+        def tukey_guard_band(freqs: np.ndarray) -> np.ndarray:
+            guard_band = np.ones_like(freqs)
+            guard_band[freqs < 200] = np.interp(freqs[freqs < 200], [0, 200], [0.95, 1.05])
+
+            transition_band = (freqs >= 200) & (freqs <= 500)
+            if transition_band.sum() > 0:
+                guard_band[transition_band] *= signal.windows.tukey(transition_band.sum(), alpha=0.5) + 1.0
+            
+            guard_band[freqs > 500] = 1.0
+            return guard_band
+
+        guard_band = tukey_guard_band(fft_freqs)
+        final_psd = interpolated_psd * guard_band
+
+        # Perform FFT-based whitening
+        white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(final_psd)
+        return np.fft.irfft(white_fft)
+
+    def condition_data_streams() -> tuple[np.ndarray, np.ndarray]:
+        """
+        Applies whitening to both detector data streams in parallel.
+        """
+        dt = times[1] - times[0]
+        with ThreadPoolExecutor() as executor:
+            whitened_h1, whitened_l1 = tuple(executor.map(lambda s: hybrid_psd_whitening(s, dt), (strain_h1, strain_l1)))
+        return whitened_h1, whitened_l1
+
+    def compute_coherence_power_metric(h1_data: np.ndarray, l1_data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Combines spectral coherence with power averaging to compute time-frequency metrics for candidate detection.
+        """
+        fs = 1.0 / (times[1] - times[0])
+        nperseg = 256
+        noverlap = int(nperseg * 0.75)
+        frequency_bands = [(30, 250), (250, 500)]  # Frequency bands of interest
+
+        # Compute spectrograms for H1 and L1
+        f_h1, t_h1, Sxx_h1 = signal.spectrogram(h1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+        f_l1, t_l1, Sxx_l1 = signal.spectrogram(l1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+
+        tf_metric = np.zeros_like(t_h1)
+        
+        for fmin, fmax in frequency_bands:
+            # Frequency range mask
+            band_mask = (f_h1 >= fmin) & (f_h1 <= fmax)
+            
+            # Compute combined power metric
+            combined_power = np.mean((Sxx_h1[band_mask] ** 2 + Sxx_l1[band_mask] ** 2) / 2, axis=0)
+            tf_metric += combined_power  # Aggregate across frequency bands
+
+        # Align metrics with GPS time
+        metric_times = times[0] + (times[-1] - times[0]) / 2 + (t_h1 - t_h1[len(t_h1) // 2])
+
+        return tf_metric, metric_times
+
+    def detect_peaks_with_adaptive_threshold(tf_metric: np.ndarray, metric_times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Detects significant peaks with frequency-scaled adaptive prominence thresholds.
+        """
+        noise_floor = 0.5 * np.mean(tf_metric) + 0.5 * np.median(tf_metric)
+
+        # Frequency-adaptive prominence scaling
+        frequency_range = np.linspace(30, 500, len(tf_metric))
+        prominence_scaling = np.interp(frequency_range, [30, 500], [0.3, 0.5])
+        prominence_threshold = noise_floor * prominence_scaling
+
+        # Peak detection
+        peaks, properties = signal.find_peaks(
+            tf_metric, height=noise_floor, prominence=prominence_threshold, distance=2
+        )
+
+        # Extract peak times, heights, and adaptively scale time uncertainty
+        peak_times = metric_times[peaks]
+        peak_heights = tf_metric[peaks]
+        adaptive_uncertainty = np.clip(8.0 - 0.03 * peak_heights, 4.0, 10.0)
+
+        return peak_times, peak_heights, adaptive_uncertainty
+
+    # Execute pipeline
+    whitened_h1, whitened_l1 = condition_data_streams()
+    tf_metric, metric_times = compute_coherence_power_metric(whitened_h1, whitened_l1)
+    peak_times, peak_heights, peak_deltat = detect_peaks_with_adaptive_threshold(tf_metric, metric_times)
+
+    return peak_times, peak_heights, peak_deltat

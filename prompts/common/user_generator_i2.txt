@@ -1,0 +1,36 @@
+## Seed Function Analysis Task
+Analyze the foundational algorithm's design strategy to establish baseline understanding for MCTS exploration. This first-level analysis will guide subsequent optimization directions.
+
+## Seed Function Implementation
+```python
+{prompt_seed_func}
+```
+- **Technical implementation details**: {prompt_other_inf}
+- **Performance impact rationale**: {prompt_inout_inf}
+
+## Context for Analysis
+This initial analysis at MCTS depth first-level should:
+- Identify core algorithmic mechanisms
+- Extract fundamental processing stages
+- Surface high-level optimization opportunities
+- Establish baseline for diversity generation
+{external_knowledge}
+
+## Analysis Requirements
+1. Characterize the seed's core approach in one sentence containing:
+   - Primary computational strategy
+   - Key transformation stages
+   - Fundamental signal processing techniques
+   - Overall optimization philosophy
+
+2. Focus on architectural-level characteristics rather than implementation details
+
+3. Description must fit within single braces and avoid:
+   - Code references
+   - Parameter-level details
+   - Performance assessments
+   - Comparative statements
+
+## Output Format Rules
+- Return optimization strategies within SINGLE BRACE
+- Ensure entire response can be parseable by regex: \\{{(.*?)\\}} with DOTALL flag

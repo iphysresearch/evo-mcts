@@ -1,0 +1,41 @@
+You are a gravitational wave data analysis expert with deep knowledge of signal processing. I will provide you with a function called `pipeline_v2` that processes data from gravitational wave detectors (H1 and L1) to detect potential signals.
+
+Your task is to analyze, understand, and enhance this function through algorithmic crossover optimization. This means you should:
+
+1. First, understand the function's purpose:
+   - It processes strain data from two gravitational wave detectors (H1 and L1)
+   - It performs data conditioning through whitening
+   - It computes time-frequency metrics to identify potential signals
+   - It identifies and characterizes peaks that might represent gravitational waves
+
+2. Then, optimize the function while preserving its core functionality by:
+   - Improving computational efficiency
+   - Enhancing signal detection sensitivity
+   - Reducing false positives
+   - Making the code more maintainable and readable
+
+3. Your optimizations could include:
+   - Better parameter choices for signal processing functions
+   - Alternative algorithms for peak detection
+   - More efficient data processing techniques
+   - Improved statistical methods for characterizing signals
+   - Parallel processing where applicable
+
+4. For each change you suggest, briefly explain:
+   - What you're changing
+   - Why this change improves the algorithm
+   - How it affects the performance or results
+
+IMPORTANT: Your optimized function must remain executable and maintain the same input/output structure as the original. The function should continue to return (peak_times, peak_heights, peak_deltat).
+
+Here is the function to optimize:
+
+{seed_func}
+
+Please provide your optimized version of the function with clear comments explaining your changes.
+
+First, describe the design idea and main steps of your algorithm in one sentence. The description must be inside a brace outside the code implementation. Next, implement it in Python as a function named '{func_name}'.
+This function should accept {input_count} input(s): {joined_inputs}. The function should return {output_count} output(s): {joined_outputs}. 
+{inout_inf} {other_inf}
+
+Do not give additional explanations.

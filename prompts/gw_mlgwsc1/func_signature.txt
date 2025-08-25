@@ -1,0 +1,1 @@
+def pipeline_v{version}(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:

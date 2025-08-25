@@ -1,0 +1,108 @@
+import numpy as np
+import scipy.signal as signal
+from joblib import Parallel, delayed
+
+# {Integrate adaptive PSD conditioning with frequency masking, variance-enhanced metrics, and logarithmic SNR-based uncertainty to maximize astrophysical signal sensitivity and localization accuracy.}
+def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    The pipeline function processes gravitational wave data from the H1 and L1 detectors
+    to identify potential gravitational wave signals. It takes strain_h1 and strain_l1
+    numpy arrays containing detector data, and a times array with corresponding time points.
+    The function returns a tuple of three numpy arrays: peak_times containing GPS times of
+    identified events, peak_heights with significance values of each peak, and peak_deltat
+    showing time window uncertainty for each peak.
+    """
+
+    def hybrid_psd_whitening(strain: np.ndarray, dt: float, window_length: int = 4096) -> np.ndarray:
+        """
+        Refine PSD whitening with adaptive clipping, dynamic guard band adjustment, 
+        and frequency masking to enhance signal isolation within astrophysical bands.
+        """
+        strain_zeromean = strain - np.mean(strain)
+        fs = 1.0 / dt
+
+        # Welch's method to compute PSD
+        freqs, psd = signal.welch(
+            strain_zeromean, fs=fs, nperseg=window_length, window='hann', noverlap=window_length // 2
+        )
+
+        # Smooth PSD and clip values adaptively
+        smooth_kernel = np.hanning(32)
+        smoothed_psd = np.convolve(psd, smooth_kernel / smooth_kernel.sum(), mode="same")
+        clipped_psd = np.clip(smoothed_psd, np.percentile(smoothed_psd, 1), np.percentile(smoothed_psd, 99))
+
+        # Interpolation with guard band adjustment
+        fft_freqs = np.fft.rfftfreq(len(strain_zeromean), d=dt)
+        interpolated_psd = np.interp(fft_freqs, freqs, clipped_psd)
+        guard_band = np.linspace(0.92, 1.08, len(interpolated_psd))
+        interpolated_psd *= guard_band
+
+        # Mask frequencies outside 20-500 Hz
+        interpolated_psd[(fft_freqs < 20) | (fft_freqs > 500)] *= 0.85
+
+        # FFT whitening
+        white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(interpolated_psd)
+        return np.fft.irfft(white_fft)
+
+    def parallel_whitening() -> tuple[np.ndarray, np.ndarray]:
+        """
+        Parallelize whitening for H1 and L1 detector data, ensuring balanced preprocessing.
+        """
+        dt = times[1] - times[0]
+        whitened_h1, whitened_l1 = Parallel(n_jobs=2)(
+            delayed(hybrid_psd_whitening)(strain, dt) for strain in (strain_h1, strain_l1)
+        )
+        return whitened_h1, whitened_l1
+
+    def compute_tf_metric(h1_data: np.ndarray, l1_data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Compute time-frequency metrics using dynamic spectrograms with variance enhancement 
+        to improve transient signal sensitivity.
+        """
+        fs = 1.0 / (times[1] - times[0])
+        nperseg, noverlap = 256, int(256 * 0.75)
+
+        # Spectrogram computation
+        f_h1, t_h1, Sxx_h1 = signal.spectrogram(h1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode='magnitude')
+        f_l1, t_l1, Sxx_l1 = signal.spectrogram(l1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode='magnitude')
+
+        # Focus on 20-500 Hz band
+        relevant_band = (f_h1 >= 20) & (f_h1 <= 500)
+
+        # Compute combined metric with variance enhancement
+        combined_metric = np.mean((Sxx_h1[relevant_band]**2 + Sxx_l1[relevant_band]**2) / 2, axis=0)
+        variance_metric = np.var((Sxx_h1[relevant_band] + Sxx_l1[relevant_band]), axis=0)
+        tf_metric = combined_metric + 0.3 * variance_metric
+
+        # Time alignment via spectrogram midpoints
+        gps_mid_time = times[0] + (times[-1] - times[0]) / 2
+        metric_times = gps_mid_time + (t_h1 - t_h1[len(t_h1) // 2])
+
+        return tf_metric, metric_times
+
+    def adaptive_peak_detection(tf_metric: np.ndarray, metric_times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Identify peaks using adaptive prominence-based thresholds and refine timing 
+        uncertainties with logarithmic SNR dependency.
+        """
+        # Hybrid noise floor estimation
+        noise_floor = 0.6 * np.mean(tf_metric) + 0.4 * np.median(tf_metric)
+
+        # Peak detection
+        peaks, properties = signal.find_peaks(tf_metric, height=noise_floor, distance=2, prominence=noise_floor * 0.5)
+        peak_times = metric_times[peaks]
+        peak_heights = tf_metric[peaks]
+
+        # Logarithmic uncertainty refinement
+        base_uncertainty = 5.0
+        uncertainty = base_uncertainty - np.log1p(peak_heights)
+        peak_deltat = np.clip(uncertainty, 3.0, 8.0)
+
+        return peak_times, peak_heights, peak_deltat
+
+    # Pipeline execution
+    whitened_h1, whitened_l1 = parallel_whitening()
+    tf_metric, metric_times = compute_tf_metric(whitened_h1, whitened_l1)
+    peak_times, peak_heights, peak_deltat = adaptive_peak_detection(tf_metric, metric_times)
+
+    return peak_times, peak_heights, peak_deltat

@@ -1,0 +1,32 @@
+## Task Overview
+Analyze and synthesize technical reflections from multiple algorithm iterations to identify cross-algorithm optimization patterns and guide next-generation algorithm design. Prioritize extraction of generalizable technical principles over implementation-specific details.
+Current Optimization Depth: depth/max_depth={depth}/{max_depth} (shallow: structural patterns, medium: implementation techniques, deep: mathematical details)
+
+## Input Context
+Analyzing {num_algorithms} algorithm reflections from MCTS exploration trajectories. Technical reflections follow depth-specific analysis requirements. Structural format: [No.N algorithm's reflection (depth: X)]<reflection>
+{algorithm_reflections}
+
+## Reflection Requirements
+1. **Pattern Identification** (Key Observed Patterns):
+   - Extract 2-3 recurring technical strategies (e.g. "Multi-scale wavelet decomposition" not "used Morlet wavelet")
+   - Categorize by analysis level: 
+     * Structural: Component architecture (e.g. "Parallel filter banks")
+     * Implementation: Algorithmic choices (e.g. "Adaptive thresholding")
+     * Mathematical: Core transforms (e.g. "Orthogonal matching pursuit")
+
+2. **Technical Pathway Analysis** (Promising Technical Pathways):
+   - Identify under-utilized but theoretically sound approaches (e.g. "Sparse representation in frequency domain")
+   - Specify required technical components without code details (e.g. "Requires: Overcomplete basis construction")
+
+3. **Optimization Principles** (Strategic Optimization Principles):
+   - Formulate depth-specific guidelines (e.g. "At mathematical level: Maximize time-frequency product ≤ 0.5")
+   - Relate physical constraints to algorithmic parameters (e.g. "Wavelet duration should match typical glitch durations")
+
+4. **Specificity Balance**:
+   - Technical specificity: Name mathematical concepts (e.g. "Gabor uncertainty") and signal processing domains
+   - Implementation avoidance: Omit code structures (e.g. "Avoid: 'Use 3 nested loops'")
+
+## Output Format Rules
+- Return optimization strategies within SINGLE BRACE
+- Ensure entire response can be parseable by regex: \\{{(.*?)\\}} with DOTALL flag
+- Do not include markdown formatting or additional explanations

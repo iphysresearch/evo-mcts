@@ -1,0 +1,42 @@
+## Task Objective
+Synthesize technical insights from algorithm evolution MCTS path to guide targeted improvements. Current Analysis Level: depth/max_depth={depth}/{max_depth} (1-2: structural, 3-4: implementation, 5+: mathematical)
+
+## Depth-Specific Focus
+- Shallow (Depth 1-2): Structural patterns & control flow
+- Medium (Depth 3-4): Implementation techniques & parameterization
+- Deep (Depth 5+): Mathematical formulations & computational primitives
+
+## Input Context
+Analyzing {num_algorithms} algorithm reflections from MCTS exploration trajectories. Technical reflections follow depth-specific analysis requirements. Structural format: [No.N algorithm's reflection (depth: X)]<description><objective><code>
+{parent_info}
+
+## Synthesis Process
+1. Cross-Level Insight Integration:
+   - Identify key recurring technical strategies across abstraction levels
+   - Note level-specific constraints affecting current implementations
+
+2. Domain Compliance Verification:
+   - Validate approaches against gravitational wave signal characteristics
+   - Check numerical reliability across different implementation levels
+
+3. Improvement Planning:
+   - Structural: Adjust data processing pipelines
+   - Implementation: Optimize critical parameter relationships
+   - Mathematical: Enhance core transformation components
+
+## Technical Workflow
+### 1. Multi-Level Technical Analysis
+┌ Structural → Compare module composition and interaction patterns
+↓ Implementation → Assess parameter sensitivity and adaptation logic
+└ Mathematical → Examine transformation kernels and precision handling
+
+### 2. Level-Appropriate Optimization
+For current depth={depth}:
+   - Select 2-4 improvement focus areas with technical rationale
+   - Define implementation requirements for each focus area
+   - Establish verification criteria with domain constraints
+
+## Output Format Rules
+- Return optimization strategies within SINGLE BRACE
+- Ensure entire response can be parseable by regex: \\{{(.*?)\\}} with DOTALL flag
+- Do not include markdown formatting or additional explanations

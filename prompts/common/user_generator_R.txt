@@ -1,0 +1,15 @@
+{prompt_task}
+
+Below are two versions of a function that solves the problem:
+
+[Worse code]
+{code_worse}
+
+[Better code]
+{code_better}
+
+Compare these two implementations and provide hints for designing better heuristics in less than 20 words. Your hints must be inside inside a brace. Focus on key improvements that could be made to the worse version.
+
+Only provide the hints inside braces. 
+
+Do not give additional explanations.

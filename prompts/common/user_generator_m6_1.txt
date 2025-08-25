@@ -1,0 +1,51 @@
+## Task Overview
+You will analyze an original algorithm, an improved version of it, and create a new enhanced algorithm. Below are the key components:
+
+## Algorithm Details
+1. ORIGINAL ALGORITHM:
+   - Description: {original_algorithm_description}
+   - Code:
+```python
+{original_algorithm_code}
+```
+   - **Objective Value**: {original_objective_value}
+
+2. BETTER ALGORITHM (Reference Implementation):
+   - Description: {better_algorithm_description}
+   - Code: 
+```python
+{better_algorithm_code}
+```
+   - **Objective Value**: {better_objective_value}
+   - Improvement Insights: 
+```text
+{better_algorithm_reflection}
+```
+
+## Implementation Requirements
+1. Analyze the differences between the original and better algorithms
+2. Create a new algorithm that:
+   - Incorporates successful elements from the better algorithm
+   - Addresses limitations revealed in the improvement insights
+   - Produces better results than the original algorithm
+3. Output format requirements:
+   - Place the core design idea in a sentence within a brace BEFORE the function definition
+   - For the core design idea format: \\{{A hybrid gravitational wave detection pipeline...}}
+   - Implement as Python function: {func_name}
+   - Inputs: {input_count} parameter(s) ({joined_inputs})
+   - Outputs: {output_count} return value(s) ({joined_outputs})
+   - Follow: {inout_inf}
+   - Constraints: {other_inf}
+   - IMPORTANT: All output code MUST be valid Python syntax. Do not place description text inside curly braces within the function body.
+   - Example of correct format:
+     \\{{Core design description here}}
+     ```python
+     def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+         """Core design description can alternatively be placed here as a docstring"""
+         # Function implementation...
+     ```
+{external_knowledge}
+
+## Important Notes
+- Focus on algorithmic improvements rather than code style changes
+- Ensure the new implementation directly addresses the reflection insights

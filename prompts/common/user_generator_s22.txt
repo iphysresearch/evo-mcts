@@ -1,0 +1,19 @@
+{prompt_task}
+
+Below is your prior reflection on designing heuristics for this problem:
+{reflection}
+
+Below is the current algorithm with its code and objective value:
+[Algorithm's description]
+{algorithm_description}
+[Code]
+{algorithm_code}
+[Objective value]
+{objective_value}
+
+Please create a new algorithm that improves upon the provided algorithm using insights from the reflection.
+First, describe the design idea and main steps of your new algorithm in one sentence. The description must be inside a brace outside the code implementation. Next, implement it in Python as a function named '{func_name}'.
+This function should accept {input_count} input(s): {joined_inputs}. The function should return {output_count} output(s): {joined_outputs}. 
+{inout_inf} {other_inf}
+
+Do not give additional explanations.

@@ -1,0 +1,13 @@
+{prompt_task}
+
+Below are some newly gained insights:
+{parent_reflections}
+
+Below is your prior elite long-term reflection on designing heuristics for this problem:
+{elite_reflection}
+
+Write constructive hints for designing better heuristics, based on prior reflections and new insights and using less than 50 words. Your hints must be inside inside a brace. Focus on key improvements that could be made to the worse version.
+
+Only provide the hints inside braces. 
+
+Do not give additional explanations.

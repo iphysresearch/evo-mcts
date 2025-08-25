@@ -1,0 +1,102 @@
+import numpy as np
+import scipy.signal as signal
+import scipy.interpolate as interp
+from concurrent.futures import ThreadPoolExecutor
+
+def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Gravitational wave detection pipeline blending adaptive whitening, hierarchical band decomposition, and dynamic 
+    prominence scaling to optimize astrophysical signal recognition and time-frequency resolution.
+    """
+
+    def enhanced_psd_whitening(strain: np.ndarray, dt: float, window_length: int = 4096) -> np.ndarray:
+        """
+        Performs adaptive PSD whitening using percentile-based clipping, Hermite smoothing, and monotonic interpolation.
+        """
+        strain_zeromean = strain - np.mean(strain)
+        fs = 1.0 / dt
+
+        # Compute PSD using Welch's method
+        freqs, psd = signal.welch(strain_zeromean, fs=fs, nperseg=window_length, window="hann", noverlap=window_length//2)
+        
+        # Hermite smoothing and clipping using percentiles
+        smoothing_kernel = signal.windows.hann(32)
+        smoothed_psd = np.convolve(psd, smoothing_kernel / smoothing_kernel.sum(), mode="same")
+        clipped_psd = np.clip(smoothed_psd, np.percentile(smoothed_psd, 1), np.percentile(smoothed_psd, 99))
+
+        # Monotonic interpolation using PCHIP
+        fft_freqs = np.fft.rfftfreq(len(strain_zeromean), d=dt)
+        psd_interpolator = interp.PchipInterpolator(freqs, clipped_psd)
+        interpolated_psd = psd_interpolator(fft_freqs)
+
+        # Apply PSD scaling for whitening
+        white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(interpolated_psd)
+        return np.fft.irfft(white_fft)
+
+    def whiten_data_streams() -> tuple[np.ndarray, np.ndarray]:
+        """
+        Parallel whitening of strain data streams using adaptive PSD whitening.
+        """
+        dt = times[1] - times[0]
+        with ThreadPoolExecutor() as executor:
+            whitened_h1, whitened_l1 = tuple(executor.map(lambda s: enhanced_psd_whitening(s, dt), [strain_h1, strain_l1]))
+        return whitened_h1, whitened_l1
+
+    def hierarchical_coherence_metrics(h1_data: np.ndarray, l1_data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Computes weighted coherence metrics based on hierarchical astrophysical band decomposition.
+        """
+        fs = 1.0 / (times[1] - times[0])
+        nperseg, noverlap = 256, 128
+
+        # Define hierarchical frequency bands and weights
+        freq_bands = [(30, 100), (100, 200), (200, 500)]
+        weights = [0.5, 0.3, 0.2]
+
+        # Compute spectrograms
+        f_h1, t_h1, Sxx_h1 = signal.spectrogram(h1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+        f_l1, t_l1, Sxx_l1 = signal.spectrogram(l1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+
+        # Combine bands to compute weighted metrics
+        tf_metric = np.zeros_like(t_h1)
+        for (fmin, fmax), weight in zip(freq_bands, weights):
+            band_mask = (f_h1 >= fmin) & (f_h1 <= fmax)
+            combined_power = np.mean((Sxx_h1[band_mask] ** 2 + Sxx_l1[band_mask] ** 2) / 2, axis=0)
+            tf_metric += weight * combined_power
+
+        # Align metric times
+        gps_mid_time = times[0] + (times[-1] - times[0]) / 2
+        metric_times = gps_mid_time + (t_h1 - np.median(t_h1))
+
+        return tf_metric, metric_times
+
+    def dynamic_prominence_peak_detection(tf_metric: np.ndarray, metric_times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Detects peaks with dynamic multi-band prominence thresholds based on astrophysical priors.
+        """
+        noise_floor = 0.75 * np.mean(tf_metric) + 0.25 * np.median(tf_metric)
+
+        # Frequency-dependent prominence scaling
+        freq_range = np.linspace(30, 500, len(tf_metric))
+        prominence_scaling = 0.3 + 0.15 * np.sin(2 * np.pi * (freq_range - 30) / 470)
+        prominence_threshold = noise_floor * prominence_scaling
+
+        # Peak detection with enhanced scaling
+        peaks, properties = signal.find_peaks(
+            tf_metric, height=noise_floor * 1.05, prominence=prominence_threshold, distance=3
+        )
+
+        # Calculate dynamic uncertainties based on peak heights
+        peak_times = metric_times[peaks]
+        peak_heights = tf_metric[peaks]
+        uncertainty_scaling = 0.02 * peak_heights + 5.0
+        peak_deltat = np.clip(uncertainty_scaling, 4.0, 10.0)
+
+        return peak_times, peak_heights, peak_deltat
+
+    # Execute pipeline
+    whitened_h1, whitened_l1 = whiten_data_streams()
+    tf_metric, metric_times = hierarchical_coherence_metrics(whitened_h1, whitened_l1)
+    peak_times, peak_heights, peak_deltat = dynamic_prominence_peak_detection(tf_metric, metric_times)
+
+    return peak_times, peak_heights, peak_deltat

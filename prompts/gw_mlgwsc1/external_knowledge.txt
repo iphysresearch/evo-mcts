@@ -1,0 +1,33 @@
+- Consider principles from non-templated gravitational wave signal search pipelines:
+  - Time-frequency analysis techniques
+  - Coherent network analysis
+  - Multi-detector consistency checks
+  - Signal-based vetoes
+  - others
+
+- Experiment with different Fourier transform methods:
+  - Short-time Fourier transform (STFT)
+  - Fast Fourier transform (FFT) with different window functions
+  - Discrete Fourier transform (DFT) with varying parameters
+  - Multi-taper spectral estimation
+  - others
+
+- Try various time-frequency domain transformations:
+  - Wavelet transforms (continuous and discrete)
+  - Wigner-Ville distribution
+  - Stockwell transform (S-transform)
+  - Constant-Q transform
+  - others
+
+- Explore different digital filtering techniques:
+  - Linear filters:
+    - FIR filters with different window designs
+    - IIR filters (Butterworth, Chebyshev, elliptic)
+    - Wiener filters
+    - others
+  - Non-linear filters:
+    - Median filters
+    - Kalman filters
+    - Adaptive filters
+    - Matched filters optimized for expected waveforms
+    - others

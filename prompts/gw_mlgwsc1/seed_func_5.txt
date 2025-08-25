@@ -1,0 +1,133 @@
+import numpy as np
+import scipy.signal as signal
+import scipy.interpolate as interp
+from concurrent.futures import ThreadPoolExecutor
+
+def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    {Enhanced gravitational wave detection pipeline integrating Tukey window transitions with α=0.5 for precision spectral shaping, Hermite interpolation for monotonic PSD modeling, and dynamic multi-band SNR-based thresholding to improve trigger sensitivity and signal recovery.}
+    """
+
+    def configure_guard_band(frequencies: np.ndarray) -> np.ndarray:
+        """
+        Configures frequency-dependent scaling with Tukey window transitions for reduced spectral leakage.
+        """
+        guard_band = np.ones_like(frequencies)
+        guard_band[frequencies < 200] = np.interp(frequencies[frequencies < 200], [0, 200], [0.95, 1.05])
+        
+        # Implement Tukey window for smoother spectral transition
+        tukey_alpha = 0.5
+        tukey_window_band = (frequencies >= 200) & (frequencies <= 500)
+        if tukey_window_band.sum() > 0:
+            tukey_window = signal.windows.tukey(tukey_window_band.sum(), alpha=tukey_alpha) + 1.0
+            guard_band[tukey_window_band] *= tukey_window
+        
+        guard_band[frequencies > 500] = 1.0
+        return guard_band
+
+    def adaptive_psd_whitening(strain: np.ndarray, dt: float, window_length: int = 4096) -> np.ndarray:
+        """
+        Implements PSD whitening with Hermite interpolation and Tukey-based guard band scaling for enhanced precision.
+        """
+        strain_zeromean = strain - np.mean(strain)
+        fs = 1.0 / dt
+
+        # Welch PSD calculation
+        freqs, psd = signal.welch(
+            strain_zeromean, fs=fs, nperseg=window_length, window="hann", noverlap=window_length // 2
+        )
+
+        # Multi-stage PSD smoothing
+        smoothing_kernel = signal.windows.hann(32)
+        smoothed_psd = np.convolve(psd, smoothing_kernel / smoothing_kernel.sum(), mode="same")
+        
+        lower_clip = np.percentile(smoothed_psd, 1)
+        upper_clip = np.percentile(smoothed_psd, 99)
+        clipped_psd = np.clip(smoothed_psd, lower_clip, upper_clip)
+
+        # Guard band and Hermite interpolation
+        f = np.fft.rfftfreq(len(strain_zeromean), d=dt)
+        psd_interpolator = interp.PchipInterpolator(freqs, clipped_psd)
+        interpolated_psd = psd_interpolator(f)
+
+        guard_band = configure_guard_band(f)
+        final_psd = interpolated_psd * guard_band
+
+        # Whitening
+        white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(final_psd)
+        return np.fft.irfft(white_fft)
+
+    def condition_data() -> tuple[np.ndarray, np.ndarray]:
+        """
+        Applies PSD whitening to the H1 and L1 data streams in parallel.
+        """
+        dt = times[1] - times[0]
+        with ThreadPoolExecutor() as executor:
+            whitened_h1, whitened_l1 = executor.map(lambda s: adaptive_psd_whitening(s, dt), (strain_h1, strain_l1))
+        return whitened_h1, whitened_l1
+
+    def compute_spectrogram(data: np.ndarray, fs: float, nperseg: int, noverlap: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Calculates the spectrogram for signal processing.
+        """
+        return signal.spectrogram(data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude", return_onesided=True)
+
+    def compute_metric_series(h1_data: np.ndarray, l1_data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Computes refined time-frequency metrics combining spectrograms for H1 and L1 detectors.
+        """
+        fs = 1.0 / (times[1] - times[0])
+
+        nperseg = 256
+        noverlap = int(nperseg * 0.75)
+
+        band_start, band_end = 30, 500
+
+        # Parallel spectrogram computation
+        with ThreadPoolExecutor() as executor:
+            (f_h1, t_h1, Sxx_h1), (f_l1, t_l1, Sxx_l1) = executor.map(
+                lambda strain: compute_spectrogram(strain, fs, nperseg, noverlap), [h1_data, l1_data]
+            )
+
+        # Restrict to gravitational wave band
+        relevant_band = (f_h1 >= band_start) & (f_h1 <= band_end)
+
+        # Combined spectrogram coherence
+        tf_metric = np.mean((Sxx_h1[relevant_band] ** 2 + Sxx_l1[relevant_band] ** 2) / 2, axis=0)
+        
+        # Synchronize GPS times
+        gps_mid_time = times[0] + (times[-1] - times[0]) / 2
+        metric_times = gps_mid_time + (t_h1 - t_h1[len(t_h1) // 2])
+
+        return tf_metric, metric_times
+
+    def calculate_statistics(tf_metric: np.ndarray, metric_times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Dynamic multi-band peak detection with SNR-weighted timing uncertainty.
+        """
+        noise_floor = 0.5 * np.mean(tf_metric) + 0.5 * np.median(tf_metric)
+
+        # Multi-band adaptive prominence thresholds
+        band_start, band_end = 30, 500
+        frequency_range = np.linspace(band_start, band_end, len(tf_metric))
+        prominence_scaling = np.interp(frequency_range, [band_start, band_end], [0.3, 0.5])
+        prominence_threshold = noise_floor * prominence_scaling
+
+        peaks, properties = signal.find_peaks(
+            tf_metric, height=noise_floor, prominence=prominence_threshold, distance=2
+        )
+
+        peak_times = metric_times[peaks]
+        peak_heights = tf_metric[peaks]
+
+        base_uncertainty = 8.0
+        adaptive_uncertainty = np.clip(base_uncertainty - 0.03 * peak_heights, 4.0, 10.0)
+
+        return peak_times, peak_heights, adaptive_uncertainty
+
+    # Pipeline execution
+    whitened_h1, whitened_l1 = condition_data()
+    tf_metric, metric_times = compute_metric_series(whitened_h1, whitened_l1)
+    peak_times, peak_heights, peak_deltat = calculate_statistics(tf_metric, metric_times)
+
+    return peak_times, peak_heights, peak_deltat

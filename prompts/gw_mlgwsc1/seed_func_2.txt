@@ -1,0 +1,127 @@
+import numpy as np
+import scipy.signal as signal
+import scipy.interpolate as interp
+from sklearn.mixture import GaussianMixture
+from concurrent.futures import ThreadPoolExecutor
+
+def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    {Combines multi-band linear-magnitude and quadratic-coherence metrics, integrates adaptive noise floor estimation
+    with a scaling ratio for astrophysical priors, introduces probabilistic timing uncertainty bounds for more robust event
+    classification, and enhances PSD whitening with dynamic quantile thresholds.}
+    """
+
+    def hybrid_psd_whitening_dynamic(strain: np.ndarray, dt: float, window_length: int = 4096) -> np.ndarray:
+        """
+        Enhances PSD whitening with dynamic multi-quantile stabilization and spectral scaling responses.
+        """
+        strain_zeromean = strain - np.mean(strain)
+        fs = 1.0 / dt
+
+        # PSD calculation using Welch method
+        freqs, psd = signal.welch(strain_zeromean, fs=fs, nperseg=window_length, window="hann", noverlap=window_length // 2)
+        
+        # Multi-quantile stabilization for PSD
+        lower_quantile = np.percentile(psd, 10)
+        upper_quantile = np.percentile(psd, 90)
+        stability_floor = (lower_quantile + upper_quantile) / 2
+        smoothed_psd = np.maximum(psd, stability_floor)
+
+        fft_freqs = np.fft.rfftfreq(len(strain_zeromean), d=dt)
+        interpolated_psd = interp.PchipInterpolator(freqs, smoothed_psd)(fft_freqs)
+
+        # Piecewise frequency-dependent scaling conserving astrophysics-informed ratios
+        ratio_scaling = np.piecewise(
+            fft_freqs,
+            [fft_freqs < 200, (fft_freqs >= 200) & (fft_freqs <= 500), fft_freqs > 500],
+            [0.6, 1.3, 1.0],
+        )
+        scaled_psd = interpolated_psd * ratio_scaling
+
+        # Whitening process
+        white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(scaled_psd)
+        return np.fft.irfft(white_fft, n=len(strain_zeromean))
+
+    def parallel_whitening_execution() -> tuple[np.ndarray, np.ndarray]:
+        """
+        Executes whitening tasks in parallel for optimal performance.
+        """
+        dt = times[1] - times[0]
+        with ThreadPoolExecutor() as executor:
+            whitened_h1, whitened_l1 = tuple(
+                executor.map(lambda strain: hybrid_psd_whitening_dynamic(strain, dt), (strain_h1, strain_l1))
+            )
+        return whitened_h1, whitened_l1
+
+    def hybrid_coherence_combined(h1_data: np.ndarray, l1_data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Blends linear-magnitude coherence and energy-based quadratic coherence for feature augmentation.
+        """
+        fs = 1.0 / (times[1] - times[0])
+        nperseg, noverlap = 256, 128
+        freq_bands = [(30, 250), (250, 500)]
+        weights_magnitude = [0.6, 0.4]
+        weights_energy = [0.7, 0.3]
+
+        # Spectrogram computation for detectors
+        f, t, Sxx_h1 = signal.spectrogram(h1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+        _, _, Sxx_l1 = signal.spectrogram(l1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+
+        # Initialize time-frequency metric
+        tf_metric = np.zeros_like(t)
+
+        # Combine multi-band metrics
+        for (fmin, fmax), w_mag, w_energy in zip(freq_bands, weights_magnitude, weights_energy):
+            band_mask = (f >= fmin) & (f <= fmax)
+            
+            # Magnitude-based coherence
+            power_magnitude = np.mean((Sxx_h1[band_mask] + Sxx_l1[band_mask]) / 2, axis=0)
+            
+            # Quadratic coherence (energy-based)
+            power_energy = np.mean((Sxx_h1[band_mask] ** 2 + Sxx_l1[band_mask] ** 2) / 2, axis=0)
+            
+            tf_metric += w_mag * power_magnitude + w_energy * power_energy
+
+        metric_times = times[0] + t
+        return tf_metric, metric_times
+
+    def adaptive_noise_floor(tf_metric: np.ndarray) -> float:
+        """
+        Enhances GMM noise estimation with dynamic scaling based on multi-band stability.
+        """
+        gm = GaussianMixture(n_components=3, random_state=np.random.randint(1, 100))
+        gm.fit(tf_metric.reshape(-1, 1))
+        noise_mean = np.min(gm.means_)
+        stability_adjustment = np.percentile(tf_metric, 20)  # Emphasize stability in noisier channels
+        return 0.6 * noise_mean + 0.4 * stability_adjustment
+
+    def probabilistic_peak_detection(tf_metric: np.ndarray, metric_times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Introduces probabilistic timing uncertainty bounds to improve detection robustness under noise.
+        """
+        noise_floor = adaptive_noise_floor(tf_metric)
+
+        # Dynamic prominence scaling to refine peak detection
+        prominence_scaling = np.interp(np.linspace(30, 500, len(tf_metric)), [30, 500], [0.3, 0.6])
+        prominence_threshold = noise_floor * prominence_scaling
+
+        peaks, properties = signal.find_peaks(
+            tf_metric, height=noise_floor * 1.1, prominence=prominence_threshold, distance=5
+        )
+        peak_times = metric_times[peaks]
+        peak_heights = tf_metric[peaks]
+
+        # Implement probabilistic timing uncertainty formula
+        uncertainty_factor = np.random.uniform(0.95, 1.05, size=len(peak_heights))  # Small randomness for robustness
+        peak_deltat = np.clip(
+            (2.0 + 0.015 * peak_heights + 1.5 * np.log1p(peak_heights)) * uncertainty_factor, 3.0, 8.0
+        )
+
+        return peak_times, peak_heights, peak_deltat
+
+    # Execute pipeline steps
+    whitened_h1, whitened_l1 = parallel_whitening_execution()
+    tf_metric, metric_times = hybrid_coherence_combined(whitened_h1, whitened_l1)
+    peak_times, peak_heights, peak_deltat = probabilistic_peak_detection(tf_metric, metric_times)
+
+    return peak_times, peak_heights, peak_deltat

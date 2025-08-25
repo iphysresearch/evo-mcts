@@ -1,0 +1,33 @@
+{prompt_task}
+
+I have an algorithm with its code, objective value, and a reflection on a better algorithm: 
+
+[Original algorithm]
+[Algorithm's description]
+{original_algorithm_description}
+[Code]
+```python
+{original_algorithm_code}
+```
+[Objective value]
+{original_objective_value}
+
+[Better algorithm]
+[Better algorithm's description]
+{better_algorithm_description}
+[Better algorithm's code]
+```python
+{better_algorithm_code}
+```
+[Better algorithm's objective value]
+{better_objective_value}
+
+[Better algorithm's reflection]
+{better_algorithm_reflection}
+
+Please create a new algorithm that improves upon the provided algorithm using insights from the reflection and the better algorithm.
+First, describe the design idea and main steps of your new algorithm in one sentence. The description must be inside a brace outside the code implementation. Next, implement it in Python as a function named '{func_name}'.
+This function should accept {input_count} input(s): {joined_inputs}. The function should return {output_count} output(s): {joined_outputs}. 
+{inout_inf} {other_inf}
+
+Do not give additional explanations.

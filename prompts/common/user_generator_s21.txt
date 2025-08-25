@@ -1,0 +1,10 @@
+{prompt_task}
+
+I have {num_algorithms} existing algorithms with their reflections as follows: 
+
+{algorithm_reflections}
+
+Based on these reflections, please provide a comprehensive reflection that synthesizes the key insights and identifies the most promising approaches for solving this problem. Your reflection should be concise but thorough, focusing on the most important patterns and strategies that emerge from the individual reflections.
+
+Only provide the reflection inside a brace. 
+Do not give additional explanations.

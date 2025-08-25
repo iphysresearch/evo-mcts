@@ -1,0 +1,24 @@
+I will provide you with a function called `pipeline_v2` that processes data from gravitational wave detectors (H1 and L1) to detect potential signals.
+
+Your task is to analyze, understand, and enhance this function through algorithmic crossover optimization.
+
+As this is the {depth} level of thinking for MCTS exploration, carefully examine the provided algorithm to understand its core structure, key components, and overall approach. Consider the algorithm holistically and identify major stages or components that could be improved or reimagined.
+
+Focus on generating diverse optimization strategies that might approach the problem from different angles. Think about alternative paradigms, data structures, or algorithmic approaches that could fundamentally transform how certain stages of the pipeline work while maintaining the same functionality.
+
+When suggesting improvements, aim for diversity in your thinking rather than incremental changes. Consider how different algorithmic paradigms might solve the same problem more effectively. This broad exploration at the first level of MCTS will help guide deeper optimization in subsequent levels.
+
+IMPORTANT: Your optimized function must remain executable and maintain the same input/output structure as the original. The function should continue to return (peak_times, peak_heights, peak_deltat).
+
+Here is the function to optimize:
+```python
+{seed_func}
+```
+
+Please provide your optimized version of the function with clear comments explaining your changes.
+
+First, describe the design idea and main steps of your algorithm in one sentence. The description must be inside a brace outside the code implementation. Next, implement it in Python as a function named '{func_name}'.
+This function should accept {input_count} input(s): {joined_inputs}. The function should return {output_count} output(s): {joined_outputs}. 
+{inout_inf} {other_inf}
+
+Do not give additional explanations.

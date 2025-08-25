@@ -1,0 +1,45 @@
+import numpy as np
+import scipy.signal as signal
+def pipeline_v1(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def data_conditioning(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        window_length = 4096
+        dt = times[1] - times[0]
+        fs = 1.0 / dt
+        
+        def whiten_strain(strain):
+            strain_zeromean = strain - np.mean(strain)
+            freqs, psd = signal.welch(strain_zeromean, fs=fs, nperseg=window_length,
+                                       window='hann', noverlap=window_length//2)
+            smoothed_psd = np.convolve(psd, np.ones(32) / 32, mode='same')
+            smoothed_psd = np.maximum(smoothed_psd, np.finfo(float).tiny)
+            white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(np.interp(np.fft.rfftfreq(len(strain_zeromean), d=dt), freqs, smoothed_psd))
+            return np.fft.irfft(white_fft)
+
+        whitened_h1 = whiten_strain(strain_h1)
+        whitened_l1 = whiten_strain(strain_l1)
+        
+        return whitened_h1, whitened_l1, times
+    
+    def compute_metric_series(h1_data: np.ndarray, l1_data: np.ndarray, time_series: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        fs = 1 / (time_series[1] - time_series[0])
+        f_h1, t_h1, Sxx_h1 = signal.spectrogram(h1_data, fs=fs, nperseg=256, noverlap=128, mode='magnitude', detrend=False)
+        f_l1, t_l1, Sxx_l1 = signal.spectrogram(l1_data, fs=fs, nperseg=256, noverlap=128, mode='magnitude', detrend=False)
+        tf_metric = np.mean((Sxx_h1**2 + Sxx_l1**2) / 2, axis=0)
+        gps_mid_time = time_series[0] + (time_series[-1] - time_series[0]) / 2
+        metric_times = gps_mid_time + (t_h1 - t_h1[-1] / 2)
+        
+        return tf_metric, metric_times
+
+    def calculate_statistics(tf_metric, t_h1):
+        background_level = np.median(tf_metric)
+        peaks, _ = signal.find_peaks(tf_metric, height=background_level * 1.0, distance=2, prominence=background_level * 0.3)
+        peak_times = t_h1[peaks]
+        peak_heights = tf_metric[peaks]
+        peak_deltat = np.full(len(peak_times), 10.0)  # Fixed uncertainty value
+        return peak_times, peak_heights, peak_deltat
+
+    whitened_h1, whitened_l1, data_times = data_conditioning(strain_h1, strain_l1, times)
+    tf_metric, metric_times = compute_metric_series(whitened_h1, whitened_l1, data_times)
+    peak_times, peak_heights, peak_deltat = calculate_statistics(tf_metric, metric_times)
+    
+    return peak_times, peak_heights, peak_deltat

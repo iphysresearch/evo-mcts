@@ -1,0 +1,21 @@
+### External Knowledge Integration
+1. **Non-linear** Processing Core Concepts:
+   - Signal Transformation: 
+     * Non-linear vs linear decomposition
+     * Adaptive threshold mechanisms
+     * Multi-scale analysis
+   
+   - Feature Extraction:
+     * Phase space reconstruction
+     * Topological data analysis
+     * Wavelet-based detection
+   
+   - Statistical Analysis:
+     * Robust estimators
+     * Non-Gaussian processes
+     * Higher-order statistics
+
+2. Implementation Principles:
+   - Prioritize adaptive over fixed parameters
+   - Consider local vs global characteristics
+   - Balance computational cost with accuracy

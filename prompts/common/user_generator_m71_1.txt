@@ -1,0 +1,32 @@
+## Task Overview
+Generate optimized technical guidelines for gravitational wave detection algorithms through systematic analysis of multi-generational reflection insights. Focus on enhancing data conditioning pipelines, time-frequency analysis methods, noise suppression techniques, and H1-L1 detector coherence optimization. Produce executable directives addressing: waveform recognition precision, computational complexity management, and non-stationary noise differentiation while maintaining strict API compliance.
+
+## Input Context
+1. NEW INSIGHTS FROM RECENT ITERATIONS:
+   - Formatted as performance-annotated entries: [Parent N Reflection | Score: X]<reflection>
+   - Time-ordered weighting (newest=highest priority) with objective score-based ranking
+   - Includes full technical post-mortems from immediate ancestors
+{parent_reflections}
+
+2. LONG-TERM REFLECTION REPOSITORY:
+   - Contains battle-tested insights from top 1% performers
+   - 3x weighting factor for architectural-level insights
+   - Curated through 3-stage filtration: 
+     1. Statistical significance validation
+     2. Cross-generational effectiveness verification
+     3. Compatibility check with current detector configurations
+{elite_reflection}
+
+## Implementation Requirements
+1. Perform weighted synthesis of reflections
+2. Generate 3-5 technically-grounded optimization directives
+3. Prioritize:
+   - Mitigation of historical implementation flaws
+   - Amplification of proven effective patterns
+   - Weighted integration of multi-generational insights
+
+## Output Format
+- Return all guidelines within SINGLE BRACE
+- Ensure entire response can be parseable by regex: \\{{(.*?)\\}} with DOTALL flag
+- Concrete technical directives only
+- No explanatory text or formatting

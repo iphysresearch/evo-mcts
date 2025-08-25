@@ -1,0 +1,112 @@
+import numpy as np
+import scipy.signal as signal
+import scipy.interpolate as interp
+from concurrent.futures import ThreadPoolExecutor
+
+def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    {Combine adaptive spectral whitening with guard band modulation, dynamic coherence aggregation using quadratic frequency scaling, and robust uncertainty propagation for enhanced gravitational wave signal detection.}
+    """
+
+    def adaptive_psd_whitening(strain: np.ndarray, dt: float, window_length: int = 4096) -> np.ndarray:
+        """
+        Perform whitening using adaptive PSD smoothing, clipping, and guard band modulation with frequency-dependent weighting.
+        """
+        strain_zeromean = strain - np.mean(strain)
+        fs = 1.0 / dt
+
+        # Compute PSD using Welch's method
+        freqs, psd = signal.welch(
+            strain_zeromean, 
+            fs=fs, 
+            nperseg=window_length, 
+            window="hann", 
+            noverlap=window_length // 2
+        )
+
+        # Smooth PSD and clip outliers
+        smoothing_kernel = np.hanning(32)
+        smoothed_psd = np.convolve(psd, smoothing_kernel / smoothing_kernel.sum(), mode="same")
+        clipped_psd = np.clip(smoothed_psd, np.percentile(smoothed_psd, 1), np.percentile(smoothed_psd, 99))
+
+        # Interpolate PSD at FFT frequencies
+        fft_freqs = np.fft.rfftfreq(len(strain_zeromean), d=dt)
+        psd_interpolator = interp.PchipInterpolator(freqs, clipped_psd)
+        interpolated_psd = psd_interpolator(fft_freqs)
+
+        # Adaptive guard band modulation for spectral whitening
+        guard_band = np.ones_like(fft_freqs)
+        guard_band[fft_freqs < 200] = np.interp(fft_freqs[fft_freqs < 200], [0, 200], [0.85, 1.0])
+        guard_band[fft_freqs >= 500] = np.interp(fft_freqs[fft_freqs >= 500], [500, fft_freqs[-1]], [1.1, 1.2])
+        transition_band = (fft_freqs >= 200) & (fft_freqs <= 500)
+        if transition_band.sum() > 0:
+            guard_band[transition_band] += signal.windows.tukey(transition_band.sum(), alpha=0.4)
+
+        final_psd = interpolated_psd * guard_band
+
+        # Perform whitening in the frequency domain
+        white_fft = np.fft.rfft(strain_zeromean) / np.sqrt(final_psd)
+        whitened_strain = np.fft.irfft(white_fft, n=len(strain_zeromean))  # Length-preserving iFFT
+        return whitened_strain
+
+    def whiten_data_streams() -> tuple[np.ndarray, np.ndarray]:
+        """
+        Parallel whitening for dual-detector streams using adaptive PSD whitening.
+        """
+        dt = times[1] - times[0]
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            whitened_h1, whitened_l1 = tuple(executor.map(lambda strain: adaptive_psd_whitening(strain, dt), [strain_h1, strain_l1]))
+        return whitened_h1, whitened_l1
+
+    def dynamic_coherence_aggregation(h1_data: np.ndarray, l1_data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Aggregate power coherence across frequency bands using quadratic scaling weights.
+        """
+        fs = 1.0 / (times[1] - times[0])
+        nperseg = 256
+        noverlap = int(nperseg * 0.75)
+        freq_bands = [(30, 100), (100, 250), (250, 500)]
+        weights = [0.4, 0.4, 0.2]  # Weighted optimization for gravitational wave bands
+
+        # Spectrogram computations for H1 and L1 data
+        f_h1, t_h1, Sxx_h1 = signal.spectrogram(h1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+        f_l1, t_l1, Sxx_l1 = signal.spectrogram(l1_data, fs=fs, nperseg=nperseg, noverlap=noverlap, mode="magnitude")
+
+        coherence_metric = np.zeros_like(t_h1)
+        for i, (fmin, fmax) in enumerate(freq_bands):
+            band_mask = (f_h1 >= fmin) & (f_h1 <= fmax)
+            combined_power = np.mean((Sxx_h1[band_mask] ** 2 + Sxx_l1[band_mask] ** 2) / 2, axis=0)  # Quadratic power aggregation
+            coherence_metric += weights[i] * combined_power
+
+        # Adjust times to midpoint of GPS segment
+        gps_mid_time = times[0] + (times[-1] - times[0]) / 2
+        adjusted_times = gps_mid_time + (t_h1 - np.median(t_h1))
+
+        return coherence_metric, adjusted_times
+
+    def robust_peak_detection(coherence_metric: np.ndarray, adjusted_times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Detect peaks in coherence metric with dynamic noise floor and propagated uncertainty scaling.
+        """
+        # Dynamic noise floor estimation
+        noise_floor = 0.85 * np.mean(coherence_metric) + 0.15 * np.percentile(coherence_metric, 90)
+
+        freq_range = np.linspace(30, 500, len(coherence_metric))
+        prominence_threshold = np.interp(freq_range, [30, 500], [0.35, 0.5]) * noise_floor
+
+        # Find peaks using adaptive prominence thresholds
+        peaks, properties = signal.find_peaks(coherence_metric, height=noise_floor, prominence=prominence_threshold, distance=3)
+
+        # Extract peak times, heights, and uncertainties
+        peak_times = adjusted_times[peaks]
+        peak_heights = coherence_metric[peaks]
+        peak_deltat = np.clip(0.02 * peak_heights + 4.0, 3.5, 10.0)  # Constrained uncertainty propagation
+
+        return peak_times, peak_heights, peak_deltat
+
+    # Main pipeline processing
+    whitened_h1, whitened_l1 = whiten_data_streams()
+    coherence_metric, adjusted_times = dynamic_coherence_aggregation(whitened_h1, whitened_l1)
+    peak_times, peak_heights, peak_deltat = robust_peak_detection(coherence_metric, adjusted_times)
+
+    return peak_times, peak_heights, peak_deltat

@@ -1,0 +1,69 @@
+## Task Overview
+Develop a novel algorithm that strategically combines components from two reference implementations while introducing innovative enhancements. The solution must demonstrate measurable improvements beyond simple interpolation of existing approaches.
+Current Depth Level: [Level {depth}]
+
+## Implementation Analysis
+### Code Comparison
+1. VERSION A (Baseline Implementation):
+```python
+{worse_code}
+```
+
+2. VERSION B (Enhanced Implementation): 
+```python
+{better_code}
+```
+
+### Strengths to Combine
+```text
+{reflection}
+```
+
+Key Synthesis Requirements:
+- Preserve 2 distinct advantages from Version A
+- Incorporate 3 critical enhancements from Version B
+- Identify 1 synergistic improvement opportunity
+
+## Architecture Strategy
+{external_knowledge}
+
+### Depth-Specific Synthesis Guidelines (Depth={depth})
+1. Structural Synthesis (Depth 1-2):
+   - Create hybrid control flow combining best elements from both versions
+   - Example: "Combine Version A's iteration structure with Version B's termination conditions"
+   - Forbid direct replication of either version's architecture
+
+2. Implementation Fusion (Depth 3-4):
+   - Develop novel parameter hybridization techniques
+   - Example: "Blend Version A's exploration mechanism with Version B's exploitation strategy"
+   - Require at least one innovative combination per functional module
+
+3. Mathematical Innovation (Depth 5+):
+   - Derive new computational operators through version synthesis
+   - Example: "Fuse Version A's approximation method with Version B's error correction"
+   - Mandate 10-20% computational complexity reduction
+
+## Requirements
+1. Core Innovation Targets:
+   - Synthesize 3+ novel elements not present in either version
+   - Resolve 2 fundamental limitations identified in analysis
+   - Introduce 1 breakthrough enhancement with mathematical justification
+   - Demonstrate non-trivial performance gain over both versions
+   - Prohibit direct replication of complete code blocks
+
+2. Output Format:
+   - Place the core design idea in a sentence within a brace BEFORE the function definition
+   - For the core design idea format: \\{{A hybrid gravitational wave detection pipeline...}}
+   - Implement as Python function: {func_name}
+   - Inputs: {input_count} parameter(s) ({joined_inputs})
+   - Outputs: {output_count} return value(s) ({joined_outputs})
+   - Follow: {inout_inf}
+   - Constraints: {other_inf}
+   - IMPORTANT: All output code MUST be valid Python syntax. Do not place description text inside curly braces within the function body.
+   - Example of correct format:
+     \\{{Core design description here}}
+     ```python
+     def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+         """Core design description can alternatively be placed here as a docstring"""
+         # Function implementation...
+     ```

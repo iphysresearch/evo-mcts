@@ -1,0 +1,40 @@
+## Task Objective
+Analyze optimization patterns across algorithm versions and generate depth-specific improvement strategies. Current MCTS Depth: depth/max_depth={depth}/{max_depth}
+
+## Depth-Specific Focus
+- Shallow (Depth 1-2): Structural patterns & control flow
+- Medium (Depth 3-4): Implementation techniques & parameterization
+- Deep (Depth 5+): Mathematical formulations & computational primitives
+
+## Algorithm Comparison
+- Original (Suboptimal)
+```python
+{code_worse}
+```
+
+- Improved (Optimized) 
+```python
+{code_better}
+```
+
+## Depth-Adaptive Analysis
+### 1. Core Pattern Extraction
+For {depth}-level analysis:
+┌ Shallow: Compare control structures/algorithmic paradigms
+├ Medium: Analyze parameter configurations/function compositions
+└ Deep: Examine mathematical operators/numerical methods
+
+### 2. Optimization Principle Generation
+Generate 3-5 transferable rules that:
+- Directly address {depth}-specific limitations
+- Contain concrete parameter values from improved version
+- Maintain functional equivalence
+
+## Output Format Rules
+- Return optimization strategies within SINGLE BRACE
+- Ensure entire response can be parseable by regex: \\{{(.*?)\\}} with DOTALL flag
+
+## Constraints
+- Focus only on algorithmically significant differences
+- Match analysis depth to {depth}-level requirements (shallow: structural patterns, medium: implementation techniques, deep: mathematical details)
+- Combine all hints in one brace with numbered items

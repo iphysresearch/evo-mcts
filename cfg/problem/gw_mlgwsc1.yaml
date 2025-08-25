@@ -1,0 +1,6 @@
+problem_name: gw_mlgwsc1
+obj_type: max
+init_pop_size: 8
+ec_m: 5
+func_name: pipeline
+description: The task involves constructing a pipeline for gravitational wave signal detection. This pipeline will encompass data conditioning and time-frequency transformations as part of the signal processing workflow. The input will consist of raw, finite-length dual-channel gravitational wave data from the H1 and L1 detectors. The pipeline will be tested on segmented data spanning several weeks, with each segment having variable length (7000s-30000s). Each segment's dual-channel data will be directly used as input. The ultimate goal is to produce a catalog of potential gravitational wave signals, where each trigger includes information such as GPS time, ranking statistic, and the timing accuracy of the prediction. This systematic approach is essential for effectively identifying and cataloging candidate gravitational wave signals.

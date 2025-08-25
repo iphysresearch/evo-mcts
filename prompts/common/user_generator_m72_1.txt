@@ -1,0 +1,56 @@
+## Task Overview
+Leverage insights from prior strategic reflection to architecturally enhance the gravitational wave detection algorithm. Develop improvements that directly address identified limitations in CRITICAL REFLECTION INSIGHTS while preserving core functionality through:
+
+1. Stage-level architectural modifications informed by reflection analysis
+2. Reflection-driven noise reduction and coherence enhancement strategies
+3. Time-frequency analysis variations targeting specific weaknesses identified
+4. H1-L1 synthesis improvements based on cross-detector insights
+
+Generate architecturally distinct variants that implement reflection-derived concepts through fundamental structural changes.
+
+## Input Context
+1. CRITICAL REFLECTION INSIGHTS (Improvement Basis):
+```text
+{reflection}
+```
+
+2. REFERENCE IMPLEMENTATION:
+[Description] {elite_algorithm_description}
+[Baseline Code]
+```python
+{elite_algorithm_code}
+```
+
+## Implementation Requirements
+1. Execute reflection-guided analysis:
+   - Map reflection insights to specific code components
+   - Identify 2-3 architectural limitations in current implementation
+2. Propose improvements that directly convert reflection insights into:
+   - Enhanced signal path architecture
+   - Novel noise handling structures
+   - Optimized computational patterns
+   - Advanced detector synergy mechanisms
+3. Maintain strict interface compatibility with existing system integration
+
+{external_knowledge}
+
+## Output Format
+- Place the core design idea in a sentence within a brace BEFORE the function definition
+- For the core design idea format: \\{{A hybrid gravitational wave detection pipeline...}}
+- Implement as Python function: {func_name}
+- Inputs: {input_count} parameter(s) ({joined_inputs})
+- Outputs: {output_count} return value(s) ({joined_outputs})
+- Follow: {inout_inf}
+- Constraints: {other_inf}
+- IMPORTANT: All output code MUST be valid Python syntax. Do not place description text inside curly braces within the function body.
+- Example of correct format:
+  \\{{Core design description here}}
+  ```python
+  def pipeline_v2(strain_h1: np.ndarray, strain_l1: np.ndarray, times: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+      """Core design description can alternatively be placed here as a docstring"""
+      # Function implementation...
+  ```
+
+## Important Notes
+- Focus on algorithmic improvements rather than code style changes
+- Ensure the new implementation directly addresses the reflection insights

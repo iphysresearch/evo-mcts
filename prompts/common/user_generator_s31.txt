@@ -1,0 +1,18 @@
+{prompt_task}
+
+Below are some existing algorithms with their descriptions, code, and objective values:
+
+{parent_info}
+
+Below is the current algorithm with its code and objective value:
+[Algorithm's description]
+{current_algorithm_description}
+[Code]
+{current_algorithm_code}
+[Objective value]
+{current_objective_value}
+
+Based on these algorithms, please provide a comprehensive reflection that synthesizes the key insights and identifies the most promising approaches for solving this problem. Your reflection should be concise but thorough, focusing on the most important patterns and strategies that emerge from the individual algorithms.
+
+Only provide the reflection inside a brace. 
+Do not give additional explanations.

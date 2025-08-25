@@ -1,0 +1,7 @@
+_target_: utils.llm_client.openai.OpenAIClient
+
+# Default values - can be overridden via command line
+model: gpt-3.5-turbo  # Override with llm_client.model=xxx
+temperature: 1.0      # Override with llm_client.temperature=xxx  
+api_key: null         # Override with llm_client.api_key=xxx
+base_url: null        # Override with llm_client.base_url=xxx

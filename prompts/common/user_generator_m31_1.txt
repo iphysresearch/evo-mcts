@@ -1,0 +1,33 @@
+## Task Overview
+Generate depth-specific optimization hints for gravitational wave detection algorithms by synthesizing multi-level reflections. 
+Current Optimization Depth: {parent_depth}/{max_depth} (shallow: structural patterns, medium: implementation techniques, deep: mathematical details)
+
+## Contextual Insights
+1. Peer Algorithm Reflections (Depth {parent_depth}):
+   - Formatted as performance-annotated entries: [No.N Brother Reflection | Score: X]<reflection>
+   - Time-ordered weighting (newest=highest priority) with objective score-based ranking
+   - Includes full technical post-mortems from immediate ancestors
+{parent_reflections}
+
+2. Father Algorithm Analysis (Depth {father_depth}):
+{father_reflection}
+
+## Hint Generation Requirements
+1. Produce 3-5 executable optimization directives that:
+   - Integrate cross-depth insights from peer implementations
+   - Target {parent_depth}-level (shallow: structural patterns, medium: implementation techniques, deep: mathematical details) components for improvement
+   - Formulate mathematically sound enhancements
+   - Align with gravitational wave data processing objectives
+
+2. Output Format Rules
+   - Return optimization strategies within SINGLE BRACE
+   - Ensure entire response can be parseable by regex: \\{{(.*?)\\}} with DOTALL flag
+   - Focus on {parent_depth}-appropriate modifications
+   - Emphasize time-domain processing optimizations
+
+## Critical Constraints
+- Each directive must correspond to concrete code changes
+- Explicitly connect to reflection insights where applicable
+- Maintain strict {parent_depth}-level focus in all suggestions
+- Exclude explanatory text within the hint brace
+- Prioritize modifications matching current depth's optimization type

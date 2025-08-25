@@ -1,0 +1,19 @@
+{prompt_task}
+
+I have analyzed two algorithms and provided a reflection on their differences. 
+
+[Worse code]
+{worse_code}
+
+[Better code]
+{better_code}
+
+[Reflection]
+{reflection}
+
+Based on this reflection, please write an improved algorithm according to the reflection. 
+First, describe the design idea and main steps of your algorithm in one sentence. The description must be inside a brace outside the code implementation. Next, implement it in Python as a function named '{func_name}'.
+This function should accept {input_count} input(s): {joined_inputs}. The function should return {output_count} output(s): {joined_outputs}. 
+{inout_inf} {other_inf}
+
+Do not give additional explanations.
