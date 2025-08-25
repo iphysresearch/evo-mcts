@@ -2,7 +2,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2508.03661-b31b1b.svg)](https://arxiv.org/abs/2508.03661)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-312/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](https://opensource.org/licenses/GPL-3.0)
 [![GitHub stars](https://img.shields.io/github/stars/iphysresearch/evo-mcts?style=social)](https://github.com/iphysresearch/evo-mcts/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/iphysresearch/evo-mcts?style=social)](https://github.com/iphysresearch/evo-mcts/network/members)
 
@@ -31,7 +31,11 @@ This repository contains the open-source, reproducible code for the research pap
 
 **Title:** Automated Algorithmic Discovery for Gravitational-Wave Detection Guided by LLM-Informed Evolutionary Monte Carlo Tree Search
 
-**Authors:** He Wang, Liang Zeng
+**Authors:** He Wang<sup>1,2</sup>, Liang Zeng<sup>3</sup>
+
+<sub>1. International Centre for Theoretical Physics Asia-Pacific, University of Chinese Academy of Sciences, 100190, Beijing, China</sub>  
+<sub>2. Taiji Laboratory for Gravitational Wave Universe, University of Chinese Academy of Sciences, 100049, Beijing, China</sub>  
+<sub>3. Tsinghua University, 100084, Beijing, China </sub>
 
 **Abstract:** From fundamental physics to gravitational-wave astronomy, computational scientific discovery increasingly relies on sophisticated algorithms to analyze complex datasets, yet reliable identification of gravitational-wave signals with unknown source parameters buried in dynamic detector noise remains a formidable challenge. While existing algorithmic approaches have achieved partial success, their core limitations arise from restrictive prior assumptions: traditional methods suffer from reliance on predefined theoretical priors, while neural network approaches introduce hidden biases and lack interpretability. We propose **Evolutionary Monte Carlo Tree Search (Evo-MCTS)**, the first integration of large language model (LLM) guidance with domain-aware physical constraints to generate interpretable solutions for automated gravitational wave detection. This framework systematically explores algorithmic solution spaces through tree-structured search enhanced by evolutionary optimization. Experimental validation demonstrates substantial performance improvements, achieving a **20.2%** improvement over state-of-the-art gravitational wave detection algorithms on the MLGWSC-1 benchmark dataset and a remarkable **59.1%** improvement over other LLM-based algorithm optimization frameworks. More fundamentally, our framework establishes a transferable methodology for automated algorithmic discovery across computational science domains through systematic exploration of novel algorithmic combinations.
 
@@ -395,7 +399,7 @@ We welcome contributions to improve the framework! Please:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
