@@ -1,0 +1,78 @@
+# GitHub Pages Configuration for Evo-MCTS
+
+# Site settings
+title: "Evo-MCTS: Evolutionary Monte Carlo Tree Search for Gravitational Wave Detection"
+description: "The first integration of LLM guidance with domain-aware physical constraints for automated gravitational wave detection"
+baseurl: "/evo-mcts"
+url: "https://iphysresearch.github.io"
+
+# Author information
+author:
+  name: "He Wang & Liang Zeng"
+  email: ""
+
+# Repository information
+repository: "iphysresearch/evo-mcts"
+
+# Social media and links
+social:
+  github: "iphysresearch/evo-mcts"
+  arxiv: "2508.03661"
+
+# SEO settings
+lang: "en"
+timezone: "Asia/Shanghai"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+  - gemfiles
+
+# Include files
+include:
+  - _redirects
+
+# Collections (if needed for future expansion)
+collections:
+  algorithms:
+    output: true
+    permalink: /:collection/:name/
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+      author: "Evo-MCTS Research Team"
+
+# Sass configuration
+sass:
+  style: compressed
+  sass_dir: assets/css
+
+# HTML compression
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false

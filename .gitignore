@@ -1,6 +1,8 @@
 # Shell scripts (deprecated in favor of run_template.py)
 test.sh
 test_flexible.sh
+deploy-site.sh
+GITHUB_PAGES_SETUP.md
 
 # Python
 __pycache__/

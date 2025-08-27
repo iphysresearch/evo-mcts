@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evo-MCTS: Evolutionary Monte Carlo Tree Search for Gravitational Wave Detection</title>
+    <meta name="description" content="Official implementation of automated algorithmic discovery for gravitational-wave detection guided by LLM-informed evolutionary Monte Carlo Tree Search">
+    <meta name="keywords" content="gravitational waves, machine learning, monte carlo tree search, evolutionary algorithms, LLM, LIGO">
+    <meta name="author" content="He Wang, Liang Zeng">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Evo-MCTS: Evolutionary Monte Carlo Tree Search for Gravitational Wave Detection">
+    <meta property="og:description" content="Novel computational framework for automated algorithmic discovery in gravitational wave detection">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iphysresearch.github.io/evo-mcts/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/style.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-project-diagram"></i>
+                <span>Evo-MCTS</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#abstract" class="nav-link">Abstract</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#usage" class="nav-link">Usage</a>
+                <a href="#citation" class="nav-link">Citation</a>
+                <a href="https://github.com/iphysresearch/evo-mcts" class="nav-link github-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Main Title -->
+                <h1 class="main-title">
+                    <span class="title-primary">Evo-MCTS: Evolutionary Monte Carlo Tree Search for Gravitational Wave Detection</span>
+                    <!-- <span class="title-primary"></span> -->
+                    <!-- <span class="title-secondary"></span> -->
+                </h1>
+                
+                <!-- Authors -->
+                <div class="authors">
+                    <span class="author">
+                        He Wang<sup>1,2</sup>
+                        <span class="author-links">
+                            <a href="https://iphysresearch.github.io/blog/about/" target="_blank" title="Personal Website">
+                                <i class="fas fa-globe"></i>
+                            </a>
+                            <a href="https://github.com/iphysresearch" target="_blank" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </span>
+                    </span>
+                    <span class="author">
+                        Liang Zeng<sup>3</sup>
+                        <span class="author-links">
+                            <a href="https://scholar.google.com/citations?user=yG8fNjIAAAAJ" target="_blank" title="Google Scholar">
+                                <i class="fas fa-graduation-cap"></i>
+                            </a>
+                        </span>
+                    </span>
+                </div>
+                
+                <!-- Affiliations -->
+                <div class="affiliations">
+                    <div class="affiliation"><sup>1</sup> International Centre for Theoretical Physics Asia-Pacific, University of Chinese Academy of Sciences</div>
+                    <div class="affiliation"><sup>2</sup> Taiji Laboratory for Gravitational Wave Universe, University of Chinese Academy of Sciences</div>
+                    <div class="affiliation"><sup>3</sup> Tsinghua University</div>
+                </div>
+                
+
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="https://arxiv.org/abs/2508.03661" class="btn btn-paper" target="_blank">
+                        <i class="fas fa-file-alt"></i> arXiv Paper
+                    </a>
+                    <a href="https://github.com/iphysresearch/evo-mcts" class="btn btn-code" target="_blank">
+                        <i class="fab fa-github"></i> Code
+                    </a>
+                    <a href="#gallery" class="btn btn-gallery">
+                        <i class="fas fa-images"></i> Gallery
+                    </a>
+                </div>
+                
+                <!-- Tagline -->
+                <div class="tagline">
+                    <strong>Give Evo-MCTS a few iterations, and get a state-of-the-art gravitational wave detection algorithm in return!</strong>
+                </div>
+                
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract Section -->
+    <section id="abstract" class="section">
+        <div class="container">
+            <h2 class="section-title">Abstract</h2>
+            <div class="abstract-content">
+                <p>
+                    From fundamental physics to gravitational-wave astronomy, computational scientific discovery 
+                    increasingly relies on sophisticated algorithms to analyze complex datasets, yet reliable 
+                    identification of gravitational-wave signals with unknown source parameters buried in dynamic 
+                    detector noise remains a formidable challenge. While existing algorithmic approaches have achieved 
+                    partial success, their core limitations arise from restrictive prior assumptions: traditional methods 
+                    suffer from reliance on predefined theoretical priors, while neural network approaches introduce 
+                    hidden biases and lack interpretability.
+                </p>
+                <p>
+                    This paper introduces <strong>Evolutionary Monte Carlo Tree Search (Evo-MCTS)</strong>, the first 
+                    integration of large language model (LLM) guidance with domain-aware physical constraints to generate 
+                    interpretable solutions for automated gravitational wave detection. This framework systematically 
+                    explores algorithmic solution spaces through tree-structured search enhanced by evolutionary optimization. 
+                    Experimental validation demonstrates substantial performance improvements, achieving notable improvements 
+                    over state-of-the-art gravitational wave detection algorithms on the MLGWSC-1 benchmark dataset and 
+                    significant advantages over other LLM-based algorithm optimization frameworks.
+                </p>
+                <p>
+                    More fundamentally, our framework establishes a transferable methodology for automated algorithmic 
+                    discovery across computational science domains through systematic exploration of novel algorithmic combinations.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="section">
+        <div class="container">            
+            <div class="gallery-container">
+                <!-- Previous Button -->
+                <button class="gallery-nav-btn prev-btn" onclick="previousSlide()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="gallery-wrapper">
+                    <div class="gallery-track" id="galleryTrack">
+                        <!-- Figure 1 -->
+                        <div class="gallery-slide">
+                            <div class="slide-content">
+                                <img src="assets/fig1.png" alt="Framework Architecture" class="gallery-image" onclick="openModal(this)">
+                            </div>
+                        </div>
+                        
+                        <!-- Figure 2 -->
+                        <div class="gallery-slide">
+                            <div class="slide-content">
+                                <img src="assets/fig2.png" alt="MCTS Tree Structure" class="gallery-image" onclick="openModal(this)">
+                            </div>
+                        </div>
+                        
+                        <!-- Figure 3 -->
+                        <div class="gallery-slide">
+                            <div class="slide-content">
+                                <img src="assets/fig3.png" alt="Algorithm Evolution" class="gallery-image" onclick="openModal(this)">
+                            </div>
+                        </div>
+                        
+                        <!-- Figure 4 -->
+                        <div class="gallery-slide">
+                            <div class="slide-content">
+                                <img src="assets/fig4.png" alt="Performance Analysis" class="gallery-image" onclick="openModal(this)">
+                            </div>
+                        </div>
+                        
+                        <!-- Figure 5 -->
+                        <div class="gallery-slide">
+                            <div class="slide-content">
+                                <img src="assets/fig5.png" alt="Signal Detection Results" class="gallery-image" onclick="openModal(this)">
+                            </div>
+                        </div>
+                        
+                        <!-- Figure 6 -->
+                        <div class="gallery-slide">
+                            <div class="slide-content">
+                                <img src="assets/fig6.png" alt="Discovery Process" class="gallery-image" onclick="openModal(this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Next Button -->
+                <button class="gallery-nav-btn next-btn" onclick="nextSlide()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Section -->
+    <section id="usage" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Usage 🔑</h2>
+            
+            <div class="usage-content">
+                <h3>Get Started</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <pre><code>$ git clone https://github.com/iphysresearch/evo-mcts.git  # download evo-mcts code
+$ cd evo-mcts
+$ python3 -m venv ./venv                    # [optional] create virtual environment
+$ source ./venv/bin/activate                # [optional] activate virtual environment
+$ pip install hydra-core tqdm numpy joblib openai h5py gwpy pandas lalsuite
+$ pip install "scipy==1.12.0"               # dependency specifically required
+$ export OPENAI_API_KEY=xxxxxxxxxx          # set OpenAI API key
+$ python main.py problem=gw_mlgwsc1</code></pre>
+                </div>
+                
+
+                
+                <h3>Use Alternative LLMs</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <pre><code>$ export DEEPSEEK_API_KEY=xxxxxxxxxxxxxxxxxxxx
+$ python main.py llm_client=deepseek llm_client.model=deepseek-chat</code></pre>
+                </div>
+                
+                <h4>Available LLM Service Providers</h4>
+                <ul class="llm-list">
+                    <li><strong>OpenAI</strong>: gpt-3.5-turbo, gpt-4o, gpt-4-turbo, etc.</li>
+                    <li><strong>DeepSeek</strong>: deepseek-chat</li>
+                    <li><strong>Zhipu AI</strong>: GLM-3-Turbo, GLM-4-Air, etc.</li>
+                    <li>And more providers supported via <strong>LiteLLM</strong>.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Citation Section -->
+    <section id="citation" class="section">
+        <div class="container">
+            <h2 class="section-title">Citation</h2>
+            <div class="citation-content">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>bibtex</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <pre><code>@article{wang2025automated,
+    title={Automated Algorithmic Discovery for Gravitational-Wave Detection Guided by LLM-Informed Evolutionary Monte Carlo Tree Search}, 
+    author={He Wang and Liang Zeng},
+    year={2025},
+    eprint={2508.03661},
+    archivePrefix={arXiv},
+    primaryClass={cs.AI},
+    url={https://arxiv.org/abs/2508.03661}
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-logo">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Evo-MCTS</span>
+                    </div>
+                    <p class="footer-description">
+                        Evolutionary Monte Carlo Tree Search for Gravitational Wave Detection - 
+                        The first LLM-guided framework for automated algorithmic discovery.
+                    </p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Resources</h4>
+                        <a href="https://arxiv.org/abs/2508.03661" target="_blank">Paper</a>
+                        <a href="https://github.com/iphysresearch/evo-mcts" target="_blank">Code</a>
+                        <a href="https://github.com/gwastro/ml-mock-data-challenge-1" target="_blank">Dataset</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Evo-MCTS Research Team. Licensed under GPL-3.0.</p>
+                <div class="footer-badges">
+                    <a href="https://arxiv.org/abs/2508.03661" target="_blank">
+                        <img src="https://img.shields.io/badge/arXiv-2508.03661-b31b1b.svg" alt="arXiv">
+                    </a>
+                    <img src="https://img.shields.io/badge/python-3.12-blue.svg" alt="Python 3.12">
+                    <img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="GPL-3.0">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/script.js"></script>
+</body>
+</html>
