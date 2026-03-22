@@ -1,0 +1,42 @@
+================================================================================
+STATISTICAL ANALYSIS RESULTS FOR COMMENT 1.11
+================================================================================
+
+COMPARISON 1: Evo-MCTS vs MCTS-AHD
+Cohen's d: 1.24 (large)
+95% CI: [0.06, 2.43]
+p-value: 0.3636
+
+COMPARISON 2: Evo-MCTS vs ReEvo
+Cohen's d: 0.73 (medium)
+95% CI: [-0.55, 2.01]
+p-value: 0.8340
+
+================================================================================
+COMPARISON WITH FABRICATED VALUES
+================================================================================
+
+          Comparison Calculated d Calculated 95% CI Calculated p Fabricated d Fabricated 95% CI Match?
+Evo-MCTS vs MCTS-AHD         1.24      [0.06, 2.43]       0.3636         1.42      [1.08, 1.76]      ❌
+   Evo-MCTS vs ReEvo         0.73     [-0.55, 2.01]       0.8340         1.89      [1.52, 2.26]      ❌
+
+================================================================================
+LATEX TABLE CODE
+================================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\hline
+Comparison & Effect Size (Cohen's d) & 95\% CI & \textit{p}-value \\
+\hline
+Evo-MCTS vs MCTS-AHD & 1.24 (large) & [0.06, 2.43] & 0.364 \\
+Evo-MCTS vs ReEvo & 0.73 (medium) & [-0.55, 2.01] & 0.834 \\
+\hline
+\end{tabular}
+\caption{Statistical comparison of LLM-based optimization frameworks using
+production run data from Supplementary Section S8. Cohen's d effect sizes
+calculated using pooled standard deviation. Mann-Whitney U tests performed
+with two-sided alternative hypothesis. Individual run values: Evo-MCTS
+(n=5), MCTS-AHD (n=9), ReEvo (n=5).}
+\end{table}
