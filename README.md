@@ -266,6 +266,40 @@ The complete MCTS tree structure for the PT5 algorithm (node 486, fitness=5041.4
 
 This dataset enables full reproducibility of the MCTS tree construction process and provides detailed insights into the algorithmic discovery mechanism described in the paper.
 
+### Execution Logs and Baseline Comparisons
+
+Complete execution logs for reproducibility are available in [`execution_logs/`](execution_logs/):
+
+```
+execution_logs/
+├── README.md                          # Documentation and verification guide
+├── evo-mcts/                          # 5 production runs
+│   ├── run1_april_2025/
+│   │   ├── merged_log.log             # Primary discovery run (638 evals)
+│   │   └── breakthrough_nodes/        # 6 key algorithmic breakthrough JSONs
+│   ├── run2-5/                        # Additional production runs
+├── baselines/
+│   ├── mcts-ahd/                      # 9 job logs + GW adaptations
+│   └── reevo/                         # 6 job logs + GW adaptations
+├── ablation/                          # Domain knowledge ablation data
+├── analysis/                          # Budget sensitivity, statistics
+└── algorithms/                        # PT-4 implementation (pipeline_v2.py)
+```
+
+**Key Metrics (from execution logs):**
+
+| Method | Runs | LLM Calls | Best (Mpc) | Mean ± Std (Mpc) |
+|--------|------|-----------|------------|------------------|
+| **Evo-MCTS** | 5 | 441.6 ± 186.7 | **5241.37** | 2670.37 ± 1879.93 |
+| MCTS-AHD | 9 | 488.2 ± 70.7 | 2494.10 | 1235.82 ± 485.14 |
+| ReEvo | 5 | 596.0 ± 76.0 | 2899.40 | 1624.40 ± 766.79 |
+
+**Performance Improvements:**
+- **+110.2%** over MCTS-AHD (5241.37 vs 2494.10 Mpc)
+- **+80.8%** over ReEvo (5241.37 vs 2899.40 Mpc)
+
+All baseline frameworks were executed under identical conditions (same LLM model, dataset, hardware, and evaluation protocol). See [`execution_logs/README.md`](execution_logs/README.md) for verification instructions.
+
 ### Scientific Contributions
 - **First LLM-guided approach** for gravitational wave detection with domain-aware physical constraints
 - Discovery of novel algorithmic combinations previously unexplored
