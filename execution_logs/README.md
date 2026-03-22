@@ -182,12 +182,12 @@ grep "fitness" logs/log_*.log | sort -t: -k3 -n | tail -1
 If you use these execution logs in your research, please cite:
 
 ```bibtex
-@article{evo-mcts-2025,
+@article{evo-mcts-2026,
   title={Evo-MCTS: LLM-Guided Evolutionary Monte Carlo Tree Search
          for Automated Algorithm Discovery in Gravitational Wave Detection},
   author={[Authors]},
-  journal={Nature Communications},
-  year={2025}
+  journal={...},
+  year={2026}
 }
 ```
 
