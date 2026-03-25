@@ -28,7 +28,7 @@
 11. `prompts/gw_mlgwsc1/external_knowledge.txt` - Domain-specific knowledge
 
 ### Execution Results
-- **Runs**: 6 independent executions (June 15-16, 2025)
+- **Runs**: 6 attempted executions (5 successful + 1 failed, June 15-16, 2025)
 - **LLM model**: o3-mini-medium
 - **Output directory**: `outputs/gw_mlgwsc1-constructive/`
 - **Total output size**: 189 MB (text files, logs, pickles)
@@ -50,12 +50,12 @@ ReEvo employs a hyper-heuristic approach that evolves heuristic functions throug
 
 ### Performance
 - **Best fitness achieved**: 2899.40 AUC [Mpc]
-- **Discovery point**: Iteration 18, code variant 9 (problem_iter18_code9.py)
+- **Discovery point**: Iteration 26 in run job-5
 - **Execution date**: June 17, 2025 06:02:36
 - **Comparison with Evo-MCTS**: See main manuscript Table 2
 - **Performance ranking**:
-  - Evo-MCTS: 5241.37 Mpc (+80.7% vs ReEvo)
-  - MCTS-AHD: 3293.85 Mpc (+13.6% vs ReEvo)
+  - Evo-MCTS: 5241.37 Mpc (+80.8% vs ReEvo)
+  - MCTS-AHD: 2494.10 Mpc (-13.9% vs ReEvo)
   - ReEvo: 2899.40 Mpc (baseline LLM framework)
 
 ## Reproducibility Notes

@@ -8,7 +8,7 @@
 
 **Official implementation of "Automated Algorithmic Discovery for Gravitational-Wave Detection Guided by LLM-Informed Evolutionary Monte Carlo Tree Search"**
 
-This repository contains the open-source, reproducible code for the research paper published on [arXiv:2508.03661](https://arxiv.org/abs/2508.03661). Our Evo-MCTS framework demonstrates substantial performance improvements: a **20.2% improvement** over state-of-the-art gravitational wave detection algorithms on the [MLGWSC-1 benchmark dataset](https://github.com/gwastro/ml-mock-data-challenge-1) and a remarkable **59.1% improvement** over other LLM-based algorithm optimization frameworks.
+This repository contains the open-source, reproducible code for the research paper currently available as [arXiv:2508.03661](https://arxiv.org/abs/2508.03661). Our Evo-MCTS framework demonstrates substantial performance improvements: a **20.2% improvement** over the strongest reported challenge baseline on the [MLGWSC-1 benchmark dataset](https://github.com/gwastro/ml-mock-data-challenge-1) and a **59.1% improvement** in architectural ablation over the ReEvo-only mean. For clarity, these percentages refer to different comparisons: **20.2%** is PT-4 versus Sage on MLGWSC-1 Set 4, whereas **59.1%** is the integrated Evo-MCTS ablation mean versus the ReEvo component mean.
 
 ## 📋 Table of Contents
 
@@ -37,7 +37,7 @@ This repository contains the open-source, reproducible code for the research pap
 <sub>2. Taiji Laboratory for Gravitational Wave Universe, University of Chinese Academy of Sciences, 100049, Beijing, China</sub>  
 <sub>3. Tsinghua University, 100084, Beijing, China </sub>
 
-**Abstract:** From fundamental physics to gravitational-wave astronomy, computational scientific discovery increasingly relies on sophisticated algorithms to analyze complex datasets, yet reliable identification of gravitational-wave signals with unknown source parameters buried in dynamic detector noise remains a formidable challenge. While existing algorithmic approaches have achieved partial success, their core limitations arise from restrictive prior assumptions: traditional methods suffer from reliance on predefined theoretical priors, while neural network approaches introduce hidden biases and lack interpretability. We propose **Evolutionary Monte Carlo Tree Search (Evo-MCTS)**, the first integration of large language model (LLM) guidance with domain-aware physical constraints to generate interpretable solutions for automated gravitational wave detection. This framework systematically explores algorithmic solution spaces through tree-structured search enhanced by evolutionary optimization. Experimental validation demonstrates substantial performance improvements, achieving a **20.2%** improvement over state-of-the-art gravitational wave detection algorithms on the MLGWSC-1 benchmark dataset and a remarkable **59.1%** improvement over other LLM-based algorithm optimization frameworks. More fundamentally, our framework establishes a transferable methodology for automated algorithmic discovery across computational science domains through systematic exploration of novel algorithmic combinations.
+**Abstract:** From fundamental physics to gravitational-wave astronomy, computational scientific discovery increasingly relies on sophisticated algorithms to analyze complex datasets, yet reliable identification of gravitational-wave signals with unknown source parameters buried in dynamic detector noise remains a formidable challenge. While existing algorithmic approaches have achieved partial success, their core limitations arise from restrictive prior assumptions: traditional methods suffer from reliance on predefined theoretical priors, while neural network approaches introduce hidden biases and lack interpretability. We propose **Evolutionary Monte Carlo Tree Search (Evo-MCTS)**, the first integration of large language model (LLM) guidance with domain-aware physical constraints to generate interpretable solutions for automated gravitational wave detection. This framework systematically explores algorithmic solution spaces through tree-structured search enhanced by evolutionary optimization. Experimental validation demonstrates substantial performance improvements, achieving a **20.2%** improvement over the strongest reported MLGWSC-1 challenge baseline and a **59.1%** improvement in architectural ablation over the ReEvo-only mean. More fundamentally, our framework establishes a transferable methodology for automated algorithmic discovery across computational science domains through systematic exploration of novel algorithmic combinations.
 
 **Citation:**
 ```bibtex
@@ -128,7 +128,7 @@ Evo-MCTS/
 ├── prompts/             # LLM prompt templates
 └── results/             # Research results and paper data
     └── paper_data/      # Published paper experimental data
-        └── mcts_tree_nodes_pt5_algorithm.jsonl  # MCTS tree nodes for PT5 algorithm
+        └── mcts_tree_nodes_pt5_algorithm.jsonl  # Historical filename; archived PT-4 node-486 tree data used in the paper
 ```
 
 ## ⚙️ Configuration
@@ -219,7 +219,7 @@ Our framework represents the first integration of LLM guidance with evolutionary
 1. **First LLM-Guided Framework**: Novel integration of large language model guidance with domain-aware physical constraints
 2. **Systematic Algorithm Space Exploration**: Tree-structured search enhanced by evolutionary optimization
 3. **Interpretable Solutions**: Generates human-interpretable algorithmic pathways for automated gravitational wave detection
-4. **Superior Performance**: 20.2% improvement over state-of-the-art methods and 59.1% improvement over other LLM-based frameworks
+4. **Superior Performance**: 20.2% improvement over the strongest reported MLGWSC-1 challenge baseline and 59.1% improvement in architectural ablation over the ReEvo-only mean
 5. **Novel Algorithm Discovery**: Discovers previously unknown algorithmic combinations
 6. **Transferable Methodology**: Establishes a transferable approach for automated algorithmic discovery across computational science domains
 
@@ -237,16 +237,16 @@ Our framework represents the first integration of LLM guidance with evolutionary
 Our Evo-MCTS framework achieves substantial performance improvements:
 
 ### Performance Benchmarks
-- **20.2% improvement** over state-of-the-art gravitational wave detection algorithms on [MLGWSC-1 benchmark](https://github.com/gwastro/ml-mock-data-challenge-1)
-- **59.1% improvement** over other LLM-based algorithm optimization frameworks
+- **20.2% improvement** over Sage on the [MLGWSC-1 benchmark](https://github.com/gwastro/ml-mock-data-challenge-1) using the PT-4 result (5241.37 vs 4359.27 Mpc)
+- **59.1% improvement** for the integrated Evo-MCTS architecture over the ReEvo-only ablation mean (2670.37 vs 1677.73 Mpc)
 - Consistent performance across high-performing algorithm variants
 - Superior handling of unknown source parameters in dynamic detector noise
 
 ### MCTS Tree Analysis and Reproducible Data
 
-The complete MCTS tree structure for the PT5 algorithm (node 486, fitness=5041.4) discovered during optimization is available in this repository. The tree data contains **38 algorithm nodes** with comprehensive execution details:
+The complete MCTS tree structure associated with the archived PT-4 breakthrough (node 486, fitness = 5241.37 Mpc) is available in this repository. The file retains an earlier internal filename for compatibility, but its contents correspond to the PT-4 tree discussed in the manuscript. The tree data contains **38 algorithm nodes** with comprehensive execution details:
 
-**Dataset**: [`results/paper_data/mcts_tree_nodes_pt5_algorithm.jsonl`](results/paper_data/mcts_tree_nodes_pt5_algorithm.jsonl)
+**Dataset**: [`results/paper_data/mcts_tree_nodes_pt5_algorithm.jsonl`](results/paper_data/mcts_tree_nodes_pt5_algorithm.jsonl) (historical filename; PT-4 tree data)
 
 **Data Schema** (corresponding to Figure 5 in the paper):
 - `eval_times`: LLM execution sequence number (1-486)
@@ -259,7 +259,7 @@ The complete MCTS tree structure for the PT5 algorithm (node 486, fitness=5041.4
 - `algorithm`: Post-thought algorithmic insights
 
 **Key Insights from Tree Analysis**:
-- **Node 486**: Best-performing PT5 algorithm with fitness score 5041.4
+- **Node 486**: Archived PT-4 breakthrough node with fitness score 5241.37 Mpc
 - **Depth Distribution**: Nodes span 10 levels (1-10) showing systematic exploration
 - **Operator Analysis**: Different MCTS operators (PC, SC, PWC, PM) contribute to diverse algorithmic variants
 - **Evolution Trajectory**: Complete path from initial random exploration to optimized solution
@@ -293,6 +293,8 @@ execution_logs/
 | **Evo-MCTS** | 5 | 441.6 ± 186.7 | **5241.37** | 2670.37 ± 1879.93 |
 | MCTS-AHD | 9 | 488.2 ± 70.7 | 2494.10 | 1235.82 ± 485.14 |
 | ReEvo | 5 | 596.0 ± 76.0 | 2899.40 | 1624.40 ± 766.79 |
+
+`LLM Calls` reports the mean ± standard deviation across independent production runs. The archived fiducial Evo-MCTS run discussed in the paper logged 638 evaluation attempts and reached PT-4 at eval 486.
 
 **Performance Improvements:**
 - **+110.2%** over MCTS-AHD (5241.37 vs 2494.10 Mpc)
@@ -438,8 +440,8 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 ## 🙏 Acknowledgments
 
 We gratefully acknowledge:
-- The LIGO Scientific Collaboration for gravitational wave data
-- The MLGWSC-1 challenge organizers
+- The organizers of the MLGWSC-1 challenge, particularly the Albert Einstein Institute team that generated and curated the benchmark dataset used in this work
+- The broader gravitational-wave research community for open data, software, and benchmarking infrastructure
 - The open-source scientific computing community
 
 ## 📞 Contact

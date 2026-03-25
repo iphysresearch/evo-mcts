@@ -158,7 +158,7 @@ grep "Objective value" merged_log.log | tail -10
 
 ### Find PT-4 discovery:
 ```bash
-grep "5241.36" merged_log.log
+grep "5241.37" merged_log.log
 ```
 
 ### Count evaluations:
@@ -179,15 +179,17 @@ grep "fitness" logs/log_*.log | sort -t: -k3 -n | tail -1
 
 ## Citation
 
-If you use these execution logs in your research, please cite:
+If you use these execution logs in your research, please cite the main Evo-MCTS paper:
 
 ```bibtex
-@article{evo-mcts-2026,
-  title={Evo-MCTS: LLM-Guided Evolutionary Monte Carlo Tree Search
-         for Automated Algorithm Discovery in Gravitational Wave Detection},
-  author={[Authors]},
-  journal={...},
-  year={2026}
+@article{wang2025automated,
+  title={Automated Algorithmic Discovery for Gravitational-Wave Detection Guided by LLM-Informed Evolutionary Monte Carlo Tree Search},
+  author={He Wang and Liang Zeng},
+  year={2025},
+  eprint={2508.03661},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/2508.03661}
 }
 ```
 
@@ -195,6 +197,6 @@ If you use these execution logs in your research, please cite:
 
 ## License
 
-These execution logs are provided under the same license as the main repository (MIT License).
+These execution logs are provided under the same license as the main repository (GPL-3.0). See the repository root `LICENSE` file for details.
 
 For questions or issues, please open an issue at: https://github.com/iphysresearch/evo-mcts/issues

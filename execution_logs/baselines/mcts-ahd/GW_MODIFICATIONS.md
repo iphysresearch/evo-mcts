@@ -29,7 +29,7 @@
 11. `prompts/gw_mlgwsc1/external_knowledge.txt` - Domain-specific knowledge
 
 ### Execution Results
-- **Runs**: 6 independent executions (June 12-15, 2025)
+- **Runs**: 9 independent executions (jobs 1-10, job-4 skipped; June 12-15, 2025)
 - **LLM model**: o3-mini-medium
 - **Output directory**: `outputs/gw_mlgwsc1-constructive/`
 - **Note**: Removed 857 .npy image files to reduce repository size (likely spectrograms/visualizations)
@@ -52,9 +52,9 @@ MCTS-AHD employs Monte Carlo Tree Search for systematic exploration:
 6. **Population**: Maintain elite algorithms for crossover operations
 
 ### Performance
-- **Best fitness achieved**: 3293.85 AUC [Mpc] (reported in main manuscript)
-- **Comparison with Evo-MCTS**: See main manuscript Table 2
-- **59.1% improvement** by Evo-MCTS over MCTS-AHD (baseline LLM framework)
+- **Best fitness achieved**: 2494.10 AUC [Mpc] (best-of-9 runs; aligned with the revised manuscript)
+- **Comparison with Evo-MCTS**: See the revised manuscript and supplementary comparison tables
+- **110.2% improvement** by Evo-MCTS over MCTS-AHD using the PT-4 value 5241.37 Mpc
 
 ## Repository Cleanup
 
@@ -114,7 +114,7 @@ All baseline frameworks (ReEvo, MCTS-AHD) were:
 - **Detectors**: H1 (Hanford) and L1 (Livingston) dual-detector coherence
 
 ### Computational Environment
-- **Execution logs**: 6 runs spanning June 12-15, 2025
+- **Execution logs**: 9 analyzed runs spanning June 12-15, 2025
 - **Parallel processing**: Multi-core injection processing
 - **Time budget**: ~3600 seconds per evaluation
 - **Storage optimization**: .npy files removed post-evaluation
